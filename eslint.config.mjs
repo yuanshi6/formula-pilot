@@ -8,6 +8,7 @@ export default defineConfig([
     ignores: [
       ".test-vault/**",
       "coverage/**",
+      "dist/**",
       "main.js",
       "node_modules/**",
     ],
