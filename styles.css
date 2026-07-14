@@ -1,0 +1,343 @@
+.formula-pilot-surface {
+  --fp-border: var(--background-modifier-border);
+  --fp-muted-bg: var(--background-secondary-alt);
+  --fp-panel-bg: var(--background-primary);
+  --fp-row-hover: var(--background-modifier-hover);
+  --fp-selected-bg: var(--background-modifier-active-hover);
+  --fp-shadow: var(--shadow-s);
+  --fp-text: var(--text-normal);
+  --fp-text-muted: var(--text-muted);
+  --fp-text-faint: var(--text-faint);
+  background: var(--fp-panel-bg);
+  border: 1px solid var(--fp-border);
+  border-radius: var(--radius-m);
+  box-shadow: var(--fp-shadow);
+  color: var(--fp-text);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-small);
+  left: var(--formula-pilot-left, 12px);
+  max-height: var(--formula-pilot-max-height, 420px);
+  max-width: min(720px, calc(100vw - 16px));
+  overflow: hidden;
+  position: fixed;
+  top: var(--formula-pilot-top, 12px);
+  z-index: var(--layer-popover);
+}
+
+.formula-pilot-surface.is-hidden {
+  display: none;
+}
+
+.formula-pilot-surface.is-font-small {
+  font-size: var(--font-ui-smaller);
+}
+
+.formula-pilot-surface.is-font-large {
+  font-size: var(--font-ui-medium);
+}
+
+.formula-pilot-candidate-shell {
+  display: grid;
+  grid-template-columns: minmax(250px, 310px) minmax(270px, 390px);
+  max-height: inherit;
+}
+
+.formula-pilot-surface.without-preview .formula-pilot-candidate-shell,
+.formula-pilot-surface.is-preview-below .formula-pilot-candidate-shell {
+  grid-template-columns: minmax(260px, 390px);
+}
+
+.formula-pilot-list-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.formula-pilot-candidate-list {
+  overflow-y: auto;
+  padding: var(--size-4-1);
+}
+
+.formula-pilot-candidate-row,
+.formula-pilot-mode-row {
+  align-items: center;
+  border-radius: var(--radius-s);
+  cursor: default;
+  display: grid;
+  gap: var(--size-4-2);
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  min-height: 38px;
+  padding: var(--size-4-1) var(--size-4-2);
+}
+
+.formula-pilot-candidate-row:hover,
+.formula-pilot-mode-row:hover {
+  background: var(--fp-row-hover);
+}
+
+.formula-pilot-candidate-row.is-selected,
+.formula-pilot-mode-row.is-selected {
+  background: var(--fp-selected-bg);
+  box-shadow: inset 2px 0 0 var(--interactive-accent);
+}
+
+.formula-pilot-keycap {
+  align-items: center;
+  background: var(--fp-muted-bg);
+  border: 1px solid var(--fp-border);
+  border-radius: var(--radius-s);
+  color: var(--fp-text-muted);
+  display: inline-flex;
+  font-family: var(--font-monospace);
+  font-size: 0.78em;
+  height: 20px;
+  justify-content: center;
+  line-height: 1;
+  width: 20px;
+}
+
+.is-selected > .formula-pilot-keycap {
+  background: var(--interactive-accent);
+  border-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+
+.formula-pilot-candidate-identity {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.formula-pilot-candidate-name,
+.formula-pilot-mode-label {
+  font-weight: var(--font-medium);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.formula-pilot-candidate-command {
+  color: var(--fp-text-muted);
+  font-family: var(--font-monospace);
+  font-size: 0.82em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.formula-pilot-type-label {
+  background: var(--fp-muted-bg);
+  border-radius: var(--radius-s);
+  color: var(--fp-text-muted);
+  font-family: var(--font-monospace);
+  font-size: 0.72em;
+  letter-spacing: 0.02em;
+  padding: 2px 6px;
+}
+
+.formula-pilot-page-footer {
+  align-items: center;
+  border-top: 1px solid var(--fp-border);
+  color: var(--fp-text-muted);
+  display: flex;
+  justify-content: space-between;
+  min-height: 32px;
+  padding: 0 var(--size-4-2);
+}
+
+.formula-pilot-page-controls {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.formula-pilot-page-button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: var(--fp-text-muted);
+  display: inline-flex;
+  height: 24px;
+  justify-content: center;
+  padding: 0;
+  width: 24px;
+}
+
+.formula-pilot-preview-panel {
+  border-left: 1px solid var(--fp-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+  min-width: 0;
+  overflow: auto;
+  padding: var(--size-4-3);
+}
+
+.formula-pilot-surface.is-preview-below .formula-pilot-preview-panel {
+  border-left: 0;
+  border-top: 1px solid var(--fp-border);
+  max-height: 220px;
+}
+
+.formula-pilot-surface.is-preview-below .formula-pilot-candidate-shell {
+  grid-template-rows: auto auto;
+}
+
+.formula-pilot-preview-eyebrow,
+.formula-pilot-preview-label,
+.formula-pilot-guided-preview-label {
+  color: var(--fp-text-faint);
+  font-size: 0.76em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.formula-pilot-preview-math {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 76px;
+  overflow-x: auto;
+  padding: var(--size-4-2);
+}
+
+.formula-pilot-preview-math .math-block {
+  margin: 0;
+}
+
+.formula-pilot-preview-source {
+  background: var(--fp-muted-bg);
+  border-radius: var(--radius-s);
+  color: var(--fp-text);
+  display: block;
+  font-family: var(--font-monospace);
+  overflow-wrap: anywhere;
+  padding: var(--size-4-2);
+  white-space: pre-wrap;
+}
+
+.formula-pilot-preview-description {
+  color: var(--fp-text-muted);
+  line-height: var(--line-height-normal);
+  margin: 0;
+}
+
+.formula-pilot-parameter-order {
+  color: var(--fp-text-muted);
+  font-size: 0.86em;
+}
+
+.formula-pilot-preview-pending,
+.formula-pilot-preview-failed-message,
+.formula-pilot-empty {
+  color: var(--fp-text-muted);
+}
+
+.formula-pilot-preview-failed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-1);
+  text-align: center;
+}
+
+.formula-pilot-mode-panel,
+.formula-pilot-guided-panel {
+  min-width: 310px;
+  padding: var(--size-4-2);
+}
+
+.formula-pilot-mode-header,
+.formula-pilot-guided-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: var(--size-4-2);
+}
+
+.formula-pilot-mode-title,
+.formula-pilot-guided-title {
+  font-family: var(--font-monospace);
+  font-weight: var(--font-semibold);
+}
+
+.formula-pilot-mode-subtitle {
+  color: var(--fp-text-muted);
+}
+
+.formula-pilot-mode-help,
+.formula-pilot-guided-help {
+  border-top: 1px solid var(--fp-border);
+  color: var(--fp-text-faint);
+  font-size: 0.8em;
+  margin-top: var(--size-4-1);
+  padding: var(--size-4-2);
+  text-align: center;
+}
+
+.formula-pilot-fields {
+  display: grid;
+  gap: var(--size-4-2);
+  padding: var(--size-4-2);
+}
+
+.formula-pilot-field {
+  align-items: start;
+  display: grid;
+  gap: var(--size-4-1) var(--size-4-2);
+  grid-template-columns: 72px minmax(180px, 1fr);
+}
+
+.formula-pilot-field-label {
+  color: var(--fp-text-muted);
+  line-height: var(--input-height);
+}
+
+.formula-pilot-field-control {
+  min-width: 0;
+  width: 100%;
+}
+
+.formula-pilot-field-control.has-error {
+  border-color: var(--text-error);
+  box-shadow: 0 0 0 1px var(--text-error);
+}
+
+.formula-pilot-field-error {
+  color: var(--text-error);
+  font-size: 0.78em;
+  grid-column: 2;
+  min-height: 0;
+}
+
+.formula-pilot-guided-preview {
+  border-top: 1px solid var(--fp-border);
+  margin-top: var(--size-4-1);
+  padding: var(--size-4-2);
+}
+
+.formula-pilot-guided-hint {
+  color: var(--text-faint);
+  font-family: var(--font-monospace);
+  opacity: 0.82;
+  padding-inline: 2px;
+}
+
+.formula-pilot-surface.is-compact {
+  overflow-y: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .formula-pilot-surface {
+    animation: formula-pilot-enter 90ms ease-out;
+  }
+}
+
+@keyframes formula-pilot-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

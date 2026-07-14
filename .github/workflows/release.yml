@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify project
+        run: npm run check
+
+      - name: Verify tag version
+        shell: bash
+        run: |
+          version="$(node -p 'require("./package.json").version')"
+          test "${GITHUB_REF_NAME}" = "v${version}"
+
+      - name: Build release package
+        run: npm run package
+
+      - name: Create GitHub release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="$(node -p 'require("./package.json").version')"
+          release_dir="dist/formula-pilot-${version}"
+          gh release create "${GITHUB_REF_NAME}" \
+            "dist/formula-pilot-${version}.zip" \
+            "${release_dir}/main.js" \
+            "${release_dir}/manifest.json" \
+            "${release_dir}/styles.css" \
+            --generate-notes \
+            --title "Formula Pilot ${version}"
