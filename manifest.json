@@ -1,7 +1,7 @@
 {
   "id": "formula-pilot",
   "name": "Formula Pilot",
-  "version": "0.1.0",
+  "version": "2.0.2",
   "minAppVersion": "1.12.7",
   "description": "Discover, preview, and fill LaTeX formulas without leaving the editor.",
   "author": "yuanshi",

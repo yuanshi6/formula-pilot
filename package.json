@@ -1,6 +1,6 @@
 {
   "name": "formula-pilot",
-  "version": "0.1.0",
+  "version": "2.0.2",
   "description": "Guided LaTeX completion for Obsidian.",
   "main": "main.js",
   "type": "module",

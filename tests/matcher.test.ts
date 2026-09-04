@@ -51,6 +51,13 @@ describe("candidate matcher", () => {
     expect(normalizeQuery("  \\ＬI  ")).toBe("li");
   });
 
+  it("matches uppercase Greek canonical commands only with their exact case", () => {
+    expect(idsFor("Gamma")[0]).toBe("symbol.upper-gamma");
+    expect(idsFor("gamma")[0]).toBe("symbol.gamma");
+    expect(idsFor("Gamm")[0]).toBe("symbol.upper-gamma");
+    expect(idsFor("gamm")[0]).toBe("symbol.gamma");
+  });
+
   it("supports subsequence and bounded spelling correction", () => {
     expect(subsequenceDistance("lmt", "limit")).toBeTypeOf("number");
     expect(levenshteinDistance("lmi", "lim")).toBe(2);
@@ -72,6 +79,11 @@ describe("candidate matcher", () => {
     ["aerfa", "symbol.alpha"],
     ["小于等于", "relation.leq"],
     ["xiaoyudengyu", "relation.leq"],
+    ["方框内容", "box.content"],
+    ["fangkuangneirong", "box.content"],
+    ["fangkuang", "box.content"],
+    ["自定义环境", "environment.custom"],
+    ["zidingyihuanjing", "environment.custom"],
   ])("puts the localized shortcut %s first", (query, stableId) => {
     expect(idsFor(query)[0]).toBe(stableId);
   });

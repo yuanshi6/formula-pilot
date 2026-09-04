@@ -43,10 +43,13 @@ jobs:
         run: |
           version="$(node -p 'require("./package.json").version')"
           release_dir="dist/formula-pilot-${version}"
+          release_flags=(--generate-notes --title "Formula Pilot ${version}")
+          if [[ "${version}" == *-* ]]; then
+            release_flags+=(--prerelease)
+          fi
           gh release create "${GITHUB_REF_NAME}" \
             "dist/formula-pilot-${version}.zip" \
             "${release_dir}/main.js" \
             "${release_dir}/manifest.json" \
             "${release_dir}/styles.css" \
-            --generate-notes \
-            --title "Formula Pilot ${version}"
+            "${release_flags[@]}"

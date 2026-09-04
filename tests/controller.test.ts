@@ -1,7 +1,9 @@
 import { EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import { afterEach, describe, expect, it } from "vitest";
+import { getCandidate, getDefaultParameterValues } from "../src/core/catalog";
 import { DEFAULT_DATA, DEFAULT_PREFERENCES } from "../src/core/settings";
+import { generateStructuredFormula } from "../src/core/templates";
 import type { GeneratedFormula, GuidedMode, UsageSnapshot } from "../src/core/types";
 import { createFormulaPilotEditorExtension } from "../src/editor/controller";
 import type {
@@ -168,5 +170,45 @@ describe("placeholder keyboard ownership", () => {
     expect(view.state.doc.toString()).toBe("\\frac{a}{b}");
     expect(view.state.selection.main.from).toBe(9);
     expect(view.state.selection.main.to).toBe(10);
+  });
+
+  it("uses aligned for direct custom environments and exposes only the body placeholder", () => {
+    const runtime = new TestRuntime();
+    const parent = document.createElement("div");
+    document.body.append(parent);
+    const queryRaw = "\\environment";
+    const view = new EditorView({
+      parent,
+      state: EditorState.create({
+        doc: queryRaw,
+        extensions: [createFormulaPilotEditorExtension(runtime)],
+      }),
+    });
+    views.push(view);
+
+    const candidate = getCandidate("environment.custom");
+    if (candidate.type !== "function") throw new Error("Expected custom environment function");
+    const values = getDefaultParameterValues(candidate);
+    const formula = generateStructuredFormula(candidate, values, true);
+    expect(formula.latex).toBe("\\begin{aligned}a&=b+c\\\\d&=e+f\\end{aligned}");
+    expect(formula.placeholders.map((placeholder) => placeholder.id)).toEqual(["body"]);
+
+    const controller = runtime.controller as FormulaPilotControllerHandle & {
+      insertGenerated(
+        stableId: string,
+        query: { from: number; to: number; raw: string; query: string },
+        generated: GeneratedFormula,
+      ): void;
+    };
+    controller.insertGenerated(
+      candidate.stableId,
+      { from: 0, to: queryRaw.length, raw: queryRaw, query: "environment" },
+      formula,
+    );
+
+    expect(view.state.doc.toString()).toBe(formula.latex);
+    expect(view.state.selection.main.from).toBe(formula.placeholders[0]?.from);
+    expect(view.state.selection.main.to).toBe(formula.placeholders[0]?.to);
+    expect(view.state.selection.main.to - view.state.selection.main.from).toBe("a&=b+c\\\\d&=e+f".length);
   });
 });

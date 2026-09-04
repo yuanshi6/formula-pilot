@@ -20,6 +20,12 @@ export function normalizeQuery(input: string): string {
   return normalized.startsWith("\\") ? normalized.slice(1) : normalized;
 }
 
+/** Normalize a query for case-sensitive canonical LaTeX commands. */
+const normalizeCanonicalQuery = (input: string): string => {
+  const normalized = input.normalize("NFKC").trim();
+  return normalized.startsWith("\\") ? normalized.slice(1) : normalized;
+};
+
 const normalizeField = (input: string): string =>
   input
     .normalize("NFKC")
@@ -69,8 +75,11 @@ export function levenshteinDistance(left: string, right: string): number {
   return previous[right.length] ?? 0;
 }
 
-function bestMatch(candidate: CandidateDefinition, query: string): FieldMatch | undefined {
-  const canonical = normalizeField(candidate.canonicalTrigger);
+function bestMatch(candidate: CandidateDefinition, query: string, canonicalQuery: string): FieldMatch | undefined {
+  const canonical = candidate.canonicalCaseSensitive
+    ? candidate.canonicalTrigger.normalize("NFKC").trim()
+    : normalizeField(candidate.canonicalTrigger);
+  const canonicalMatchQuery = candidate.canonicalCaseSensitive ? canonicalQuery : query;
   const english = normalizeField(candidate.englishName);
   const aliases = candidate.aliases.map(normalizeField);
   const chinese = normalizeField(candidate.chineseName);
@@ -89,12 +98,22 @@ function bestMatch(candidate: CandidateDefinition, query: string): FieldMatch | 
     ...pinyinAliases.map((alias) => ["pinyinAlias", alias] as const),
   ];
 
-  if (canonical === query) {
-    matches.push({ rank: 1, distance: 0, debug: { field: "canonicalTrigger", normalizedField: canonical } });
+  if (canonical === canonicalMatchQuery) {
+    matches.push({
+      // A case-sensitive canonical hit must beat the case-insensitive legacy
+      // spelling (for example `Gamma` must beat `gamma`).
+      rank: candidate.canonicalCaseSensitive ? 0 : 1,
+      distance: 0,
+      debug: { field: "canonicalTrigger", normalizedField: canonical },
+    });
   } else {
-    const distance = prefixDistance(query, canonical);
+    const distance = prefixDistance(canonicalMatchQuery, canonical);
     if (distance !== undefined) {
-      matches.push({ rank: 3, distance, debug: { field: "canonicalTrigger", normalizedField: canonical } });
+      matches.push({
+        rank: candidate.canonicalCaseSensitive ? 2 : 3,
+        distance,
+        debug: { field: "canonicalTrigger", normalizedField: canonical },
+      });
     }
   }
 
@@ -183,10 +202,11 @@ export function matchCandidates(
   usage: UsageSnapshot = {},
 ): readonly MatchResult[] {
   const query = normalizeQuery(rawQuery);
+  const canonicalQuery = normalizeCanonicalQuery(rawQuery);
   if (!query) return [];
   const results: MatchResult[] = [];
   for (const candidate of catalog) {
-    const matched = bestMatch(candidate, query);
+    const matched = bestMatch(candidate, query, canonicalQuery);
     if (!matched) continue;
     const history = usage[candidate.stableId];
     results.push({

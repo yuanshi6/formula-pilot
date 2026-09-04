@@ -2,7 +2,7 @@ export type CandidateKind = "symbol" | "command" | "function";
 
 export type GuidedMode = "guided" | "direct";
 
-export type ParameterInputKind = "text" | "enum" | "positive-integer";
+export type ParameterInputKind = "text" | "multiline-text" | "enum" | "positive-integer";
 
 export interface ParameterOption {
   readonly label: string;
@@ -23,6 +23,8 @@ export interface BaseCandidateDefinition {
   readonly stableId: string;
   readonly type: CandidateKind;
   readonly canonicalTrigger: string;
+  /** Preserve case for canonical LaTeX commands such as `Gamma`/`gamma`. */
+  readonly canonicalCaseSensitive?: boolean;
   readonly englishName: string;
   readonly chineseName: string;
   readonly aliases: readonly string[];

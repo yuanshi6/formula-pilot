@@ -296,6 +296,12 @@
   width: 100%;
 }
 
+.formula-pilot-field-control:is(textarea) {
+  min-height: 72px;
+  resize: vertical;
+  white-space: pre-wrap;
+}
+
 .formula-pilot-field-control.has-error {
   border-color: var(--text-error);
   box-shadow: 0 0 0 1px var(--text-error);

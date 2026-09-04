@@ -50,7 +50,7 @@ export class FormulaPilotSurface {
   private readonly root: HTMLDivElement;
   private readonly id: string;
   private readonly previewCache = new Map<string, HTMLElement>();
-  private readonly controls = new Map<string, HTMLInputElement | HTMLSelectElement>();
+  private readonly controls = new Map<string, HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>();
   private readonly errorElements = new Map<string, HTMLDivElement>();
   private previewGeneration = 0;
   private anchorPosition = 0;
@@ -290,7 +290,7 @@ export class FormulaPilotSurface {
       label.htmlFor = inputId;
       label.textContent = parameter.label;
 
-      let control: HTMLInputElement | HTMLSelectElement;
+      let control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
       if (parameter.input === "enum") {
         const select = this.document.createElement("select");
         for (const option of parameter.options ?? []) {
@@ -301,6 +301,14 @@ export class FormulaPilotSurface {
         }
         select.value = values[parameter.id] ?? parameter.defaultValue;
         control = select;
+      } else if (parameter.input === "multiline-text") {
+        const textarea = this.document.createElement("textarea");
+        textarea.value = values[parameter.id] ?? parameter.defaultValue;
+        textarea.autocomplete = "off";
+        textarea.spellcheck = false;
+        textarea.rows = 3;
+        textarea.wrap = "soft";
+        control = textarea;
       } else {
         const input = this.document.createElement("input");
         input.type = parameter.input === "positive-integer" ? "text" : "text";
@@ -322,7 +330,11 @@ export class FormulaPilotSurface {
         this.callbacks.onGuidedChange(parameter.id, control.value);
       });
       control.addEventListener("keydown", (event) =>
-        this.handleFormKeydown(event as KeyboardEvent, index),
+        this.handleFormKeydown(
+          event as KeyboardEvent,
+          index,
+          control instanceof this.document.defaultView!.HTMLTextAreaElement,
+        ),
       );
       this.controls.set(parameter.id, control);
 
@@ -379,7 +391,7 @@ export class FormulaPilotSurface {
     if (error) error.textContent = "";
   }
 
-  private handleFormKeydown(event: KeyboardEvent, index: number): void {
+  private handleFormKeydown(event: KeyboardEvent, index: number, multiline: boolean): void {
     if (event.isComposing) return;
     if (event.key === "Escape") {
       event.preventDefault();
@@ -388,6 +400,7 @@ export class FormulaPilotSurface {
       return;
     }
     if (event.key === "Enter") {
+      if (multiline && !event.metaKey && !event.ctrlKey) return;
       event.preventDefault();
       event.stopPropagation();
       if (event.metaKey || event.ctrlKey || index === this.controls.size - 1) {
@@ -409,7 +422,13 @@ export class FormulaPilotSurface {
     const control = [...this.controls.values()][index];
     if (!control) return;
     control.focus();
-    if (selectText && control instanceof this.document.defaultView!.HTMLInputElement) control.select();
+    if (
+      selectText &&
+      (control instanceof this.document.defaultView!.HTMLInputElement ||
+        control instanceof this.document.defaultView!.HTMLTextAreaElement)
+    ) {
+      control.select();
+    }
   }
 
   private createPreviewPanel(candidate: CandidateDefinition): PreviewDetails & { panel: HTMLDivElement; math: HTMLDivElement } {
