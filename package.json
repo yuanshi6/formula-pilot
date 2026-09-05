@@ -4,8 +4,8 @@
   "description": "Guided LaTeX completion for Obsidian.",
   "main": "main.js",
   "type": "module",
-  "private": true,
-  "license": "UNLICENSED",
+  "private": false,
+  "license": "GPL-3.0-only",
   "author": "yuanshi",
   "scripts": {
     "dev": "node esbuild.config.mjs",
