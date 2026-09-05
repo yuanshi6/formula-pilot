@@ -1,5 +1,12 @@
-Copyright (c) 2026 yuanshi. All rights reserved.
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
 
-No permission is granted to copy, modify, distribute, sublicense, or use
-this software or its source code except with prior written authorization
-from the copyright holder.
+Copyright (C) 2026 yuanshi
+
+Formula Pilot is licensed under the GNU General Public License, version 3 only (GPL-3.0-only), as published by the Free Software Foundation. The complete license text is available at:
+https://www.gnu.org/licenses/gpl-3.0.txt
+
+Additional permission under GPLv3 section 7 (Obsidian host compatibility):
+You have permission to use, run, and interface this covered work with the official closed-source Obsidian application and its official public API, including distributing the plugin for use in Obsidian. This additional permission is limited to host compatibility. It does not permit distribution of Formula Pilot code, modifications, or derivative or combined works without complying with GPLv3, including the obligation to provide Corresponding Source and license the covered work under GPLv3. This permission does not grant any license to Obsidian or other third-party software.
+
+If this file is distributed with a modified version, the additional permission may be removed in accordance with GPLv3 section 7.
