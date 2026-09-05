@@ -68,3 +68,5 @@ macOS / Obsidian 1.12.7 本地 MVP 已验证。Windows、Linux、社区主题矩
 Copyright © 2026 yuanshi. Licensed under GPL-3.0-only.
 
 Formula Pilot is free software licensed under the GNU General Public License, version 3 only. Copying, modifying, and distributing Formula Pilot and distributed modified or derivative works is permitted under GPLv3 with Corresponding Source obligations. A narrow GPLv3 section 7 additional permission allows use with and interface to the official closed-source Obsidian application and its official public API; see [LICENSE](LICENSE) for the complete licensing notice and exception.
+
+License: [GPL-3.0-only](LICENSE). The Obsidian host compatibility exception is documented in [LICENSE-OBSIDIAN-EXCEPTION.md](LICENSE-OBSIDIAN-EXCEPTION.md).
