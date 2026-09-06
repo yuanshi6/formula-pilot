@@ -4,7 +4,7 @@
   "description": "Guided LaTeX completion for Obsidian.",
   "main": "main.js",
   "type": "module",
-  "private": false,
+  "private": true,
   "license": "GPL-3.0-only",
   "author": "yuanshi",
   "scripts": {
